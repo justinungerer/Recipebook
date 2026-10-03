@@ -1,0 +1,39 @@
+﻿<Window x:Class="RecipeTool.App.ExtensionSetupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Set up browser capture" Width="760" Height="670"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Topmost="True"
+        Background="{StaticResource PaperBrush}" Foreground="{StaticResource InkBrush}"
+        FontFamily="Segoe UI" FontSize="14">
+    <Grid Margin="22">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="StepCounter" Foreground="{StaticResource MutedBrush}" FontWeight="SemiBold" />
+        <TextBlock x:Name="StepTitle" Grid.Row="1" FontSize="23" FontWeight="SemiBold" Margin="0,2,0,4" />
+        <TextBlock x:Name="StepText" Grid.Row="2" TextWrapping="Wrap" FontSize="16" Margin="0,0,0,10" />
+        <Border Grid.Row="3" BorderBrush="#D8CCC4" BorderThickness="1" CornerRadius="6" Width="704" Height="340"
+                ClipToBounds="True" HorizontalAlignment="Left">
+            <Canvas x:Name="Picture" Width="702" Height="338" ClipToBounds="True" />
+        </Border>
+        <TextBlock x:Name="StepHint" Grid.Row="4" TextWrapping="Wrap" Margin="0,10,0,0"
+                   Foreground="{StaticResource MutedBrush}" />
+        <DockPanel Grid.Row="5">
+            
+            <Button x:Name="ActionButton" DockPanel.Dock="Left" MinWidth="200" Click="Action_Click"
+                    Background="{StaticResource AccentBrush}" Foreground="White" BorderThickness="0" />
+            <Button x:Name="BrowserButton" DockPanel.Dock="Left" Click="Browser_Click" Visibility="Collapsed" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="BackButton" Content="← Back" MinWidth="90" Click="Back_Click" />
+                <Button x:Name="NextButton" Content="Next →" MinWidth="110" Click="Next_Click" IsDefault="True" />
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>
+
+

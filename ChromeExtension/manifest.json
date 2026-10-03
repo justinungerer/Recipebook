@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Barb's Recipe Book Capture",
+  "description": "Send a recipe from the active Chrome webpage to Barb's local recipe book when she clicks its camera button.",
+  "version": "1.0.0",
+  "permissions": [],
+  "host_permissions": [
+    "http://127.0.0.1:47831/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "capture.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

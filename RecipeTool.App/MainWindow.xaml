@@ -1,0 +1,208 @@
+﻿<Window x:Class="RecipeTool.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Barb's Recipe Book"
+        Width="1200" Height="780" MinWidth="920" MinHeight="620"
+        Background="{StaticResource PaperBrush}"
+        Foreground="{StaticResource InkBrush}"
+        FontFamily="Segoe UI" FontSize="14"
+        Closing="Window_Closing">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Background="#F8F0E9" Padding="20,14">
+            <DockPanel LastChildFill="True">
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Barb's Recipe Book" FontSize="24" FontWeight="SemiBold" />
+                    <TextBlock Text="  A little library of family favorites" Foreground="{StaticResource MutedBrush}"
+                               VerticalAlignment="Center" Margin="12,4,0,0" />
+                </StackPanel>
+                <TextBox x:Name="SearchBox" DockPanel.Dock="Right" Width="310" Height="38"
+                         VerticalContentAlignment="Center" ToolTip="Search recipes, ingredients, notes, and tags"
+                         AutomationProperties.Name="Search recipes"
+                         TextChanged="SearchBox_TextChanged" />
+                <TextBlock DockPanel.Dock="Right" Text="Search" VerticalAlignment="Center" Margin="0,0,8,0" />
+            </DockPanel>
+        </Border>
+        <Grid Grid.Row="1" Margin="16,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="205" />
+                <ColumnDefinition Width="350" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Background="#F8F3EE" CornerRadius="8" Padding="10" Margin="0,0,12,0">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
+                        <Button Content="🛒  Grocery list" Click="GroceryList_Click" Margin="0,0,0,4" />
+                        <Button Content="📅  Meal planner" Click="MealPlanner_Click" Margin="0,0,0,4" />
+                        <Button Content="🥕  What can I make?" Click="Pantry_Click" Margin="0,0,0,4" />
+                    </StackPanel>
+                    <Button DockPanel.Dock="Bottom" Content="+  Add a recipe" Height="42" FontWeight="SemiBold"
+                            Background="{StaticResource AccentBrush}" Foreground="White" BorderThickness="0"
+                            Click="AddRecipe_Click" />
+                    <ListBox x:Name="CategoriesList" BorderThickness="0" Background="Transparent"
+                             AutomationProperties.Name="Recipe categories"
+                             SelectionChanged="CategoriesList_SelectionChanged" />
+                </DockPanel>
+            </Border>
+            <Border Grid.Column="1" Background="White" CornerRadius="8" Padding="8" Margin="0,0,12,0">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="YOUR RECIPES" FontSize="12" FontWeight="Bold"
+                               Foreground="{StaticResource MutedBrush}" Margin="9,7,7,9" />
+                    <ListBox x:Name="RecipesList" BorderThickness="0" Background="Transparent"
+                             AutomationProperties.Name="Recipe list"
+                             SelectionChanged="RecipesList_SelectionChanged"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#EFE7E1" BorderThickness="0,0,0,1" Padding="7,10">
+                                    <StackPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="{Binding Badges}" DockPanel.Dock="Right" Foreground="#C0813A"
+                                                       Margin="6,0,0,0" />
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15"
+                                                       TextWrapping="Wrap" />
+                                        </DockPanel>
+                                        <DockPanel Margin="0,4,0,0">
+                                            <TextBlock Text="{Binding Category}" Foreground="{StaticResource MutedBrush}"
+                                                       FontSize="12" />
+                                            <TextBlock Text="Needs review" DockPanel.Dock="Right" Foreground="#9A4E2D"
+                                                       FontSize="11" FontWeight="SemiBold">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding NeedsReview}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </DockPanel>
+                                        <TextBlock Text="{Binding VersionName}" Foreground="{StaticResource AccentBrush}"
+                                                   FontSize="11" Margin="0,2,0,0" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+            <Border Grid.Column="2" Background="White" CornerRadius="8" Padding="22">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <TextBlock x:Name="RecipeNameText" Text="Welcome to Barb's recipe book"
+                                   FontSize="27" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock x:Name="RecipeDescriptionText" Margin="0,7,0,0"
+                                   Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" />
+                        <WrapPanel Margin="0,10,0,14">
+                            <TextBlock x:Name="RecipeCategoryText" FontWeight="SemiBold" />
+                            <TextBlock x:Name="RecipeServingsText" Margin="16,0,0,0"
+                                       Foreground="{StaticResource MutedBrush}" />
+                            <TextBlock x:Name="RecipeVersionText" Margin="16,0,0,0"
+                                       Foreground="{StaticResource AccentBrush}" />
+                        </WrapPanel>
+                        <WrapPanel x:Name="RecipeActionsPanel" Margin="0,0,0,6">
+                            <ToggleButton x:Name="FavoriteToggle" Content="♥ Favorite" Click="Favorite_Click" Margin="0,0,8,4" Padding="10,4"
+                                          AutomationProperties.Name="Favorite" />
+                            <TextBlock Text="Rating" VerticalAlignment="Center" Margin="0,0,6,4" />
+                            <ComboBox x:Name="RatingBox" Width="90" Margin="0,0,8,4" SelectionChanged="Rating_Changed"
+                                      AutomationProperties.Name="Rating">
+                                <ComboBoxItem Content="No rating" />
+                                <ComboBoxItem Content="★" />
+                                <ComboBoxItem Content="★★" />
+                                <ComboBoxItem Content="★★★" />
+                                <ComboBoxItem Content="★★★★" />
+                                <ComboBoxItem Content="★★★★★" />
+                            </ComboBox>
+                            <Button Content="✔ I made this today" Click="MadeToday_Click" Margin="0,0,8,4" Padding="10,4" />
+                            <TextBlock Text="Units" VerticalAlignment="Center" Margin="0,0,6,4" />
+                            <ComboBox x:Name="UnitsBox" Width="110" Margin="0,0,8,4" SelectionChanged="Units_Changed"
+                                      AutomationProperties.Name="Units" SelectedIndex="0">
+                                <ComboBoxItem Content="As written" />
+                                <ComboBoxItem Content="Metric" />
+                                <ComboBoxItem Content="US" />
+                            </ComboBox>
+                            <TextBlock x:Name="LastMadeText" VerticalAlignment="Center" Margin="0,0,0,4"
+                                       Foreground="{StaticResource MutedBrush}" />
+                        </WrapPanel>
+                        <TextBlock x:Name="RecipeTagsText" Foreground="{StaticResource MutedBrush}"
+                                   TextWrapping="Wrap" />
+                        <TextBlock x:Name="RecipeNotesText" Foreground="{StaticResource MutedBrush}" FontStyle="Italic"
+                                   TextWrapping="Wrap" Margin="0,6,0,0" />
+                        <Border x:Name="ReviewNotice" Visibility="Collapsed" Background="#FFF4DB"
+                                CornerRadius="5" Padding="9" Margin="0,10,0,4">
+                            <TextBlock Text="Imported from a webpage. Review the ingredients and directions, then edit to complete the recipe."
+                                       TextWrapping="Wrap" Foreground="#72511D" />
+                        </Border>
+                    </StackPanel>
+                    <Grid Grid.Row="1" Margin="0,12,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="INGREDIENTS" FontWeight="Bold" FontSize="12"
+                                   Foreground="{StaticResource MutedBrush}" />
+                        <TextBlock Grid.Column="1" Text="DIRECTIONS" FontWeight="Bold" FontSize="12"
+                                   Foreground="{StaticResource MutedBrush}" Margin="12,0,0,0" />
+                    </Grid>
+                    <Grid Grid.Row="2" Grid.RowSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="IngredientsText" Grid.Column="0" IsReadOnly="True"
+                                 AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                 BorderThickness="0" Background="#FFFCF9" />
+                        <TextBox x:Name="InstructionsText" Grid.Column="1" IsReadOnly="True"
+                                 AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                 BorderThickness="0" Background="#FFFCF9" Margin="12,0,0,0" />
+                    </Grid>
+                    <DockPanel Grid.Row="4" Margin="0,12,0,0">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Button x:Name="AdjustButton" Content="Make adjusted version" Click="AdjustedVersion_Click" />
+                            <Button x:Name="EditButton" Content="Edit" Click="EditRecipe_Click" />
+                            <Button x:Name="DeleteButton" Content="Delete" Click="DeleteRecipe_Click" />
+                            <Button x:Name="RestoreButton" Content="↶ Restore" Click="RestoreRecipe_Click" Visibility="Collapsed" />
+                            <Button x:Name="PurgeButton" Content="Delete forever" Click="PurgeRecipe_Click" Visibility="Collapsed" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Content="Export backup" Click="ExportBackup_Click" />
+                            <Button Content="Restore backup" Click="RestoreBackup_Click" />
+                            <Button Content="Open library folder" Click="OpenLibraryFolder_Click"
+                                    ToolTip="Open the local-only recipe data folder" />
+                            <TextBlock x:Name="RecipeSourceText" VerticalAlignment="Center" Margin="8,0,0,0"
+                                       Foreground="{StaticResource MutedBrush}" TextTrimming="CharacterEllipsis"
+                                       MaxWidth="270" />
+                        </StackPanel>
+                    </DockPanel>
+                </Grid>
+            </Border>
+        </Grid>
+        <Border Grid.Row="2" Background="#F8F0E9" Padding="14,7">
+            <DockPanel>
+                <TextBlock Text="Open a recipe webpage in Chrome or Edge, then click the floating camera button to capture it."
+                           Foreground="{StaticResource MutedBrush}" />
+                <Button x:Name="UndoButton" Content="↶ Undo delete" DockPanel.Dock="Right" Margin="12,0,0,0"
+                        Click="UndoDelete_Click" Visibility="Collapsed" />
+                <Button Content="Install browser extension" DockPanel.Dock="Right" Margin="12,0,0,0"
+                        Click="InstallExtension_Click"
+                        ToolTip="Set up the Chrome or Edge extension that lets the camera button capture recipes" />
+                <TextBlock x:Name="CaptureStatusText" DockPanel.Dock="Right" FontWeight="SemiBold"
+                           Foreground="{StaticResource AccentBrush}" />
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>
+

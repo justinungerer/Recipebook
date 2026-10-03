@@ -1,0 +1,24 @@
+﻿<Window x:Class="RecipeTool.App.CaptureWidgetWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Width="62" Height="62" WindowStyle="None" AllowsTransparency="True"
+        Background="Transparent" Topmost="True" ShowInTaskbar="False"
+        ResizeMode="NoResize" ShowActivated="False" Title="Capture a recipe">
+    <Button x:Name="CameraButton" Width="56" Height="56" Padding="0" Margin="3"
+            Background="#B94831" Foreground="White" BorderBrush="White" BorderThickness="2"
+            ToolTip="Click to capture the recipe on the active browser page. Drag to move this button."
+            AutomationProperties.Name="Capture recipe from active browser page"
+            AutomationProperties.HelpText="Click to capture; drag to move this floating camera button."
+            FontFamily="Segoe UI Emoji" FontSize="27" Content="📷"
+            Click="CameraButton_Click" PreviewMouseLeftButtonDown="CameraButton_PreviewMouseLeftButtonDown"
+            PreviewMouseMove="CameraButton_PreviewMouseMove">
+        <Button.Template>
+            <ControlTemplate TargetType="Button">
+                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="28">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Button.Template>
+    </Button>
+</Window>
