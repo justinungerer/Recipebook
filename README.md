@@ -49,7 +49,7 @@ Manual steps:
 
 1. Start `BarbsRecipeBook.exe`.
 2. In Chrome visit `chrome://extensions` (Edge: `edge://extensions`) and turn on **Developer mode**.
-3. Choose **Load unpacked** and select the published `ChromeExtension` folder (or the source `ChromeExtension` folder when running from source).
+3. Choose **Load unpacked** and select the `Barbs Recipe Book Extension` folder in your Documents (the app creates it when you click **Install browser extension**).
 4. Open a recipe webpage. While the desktop app is running, a small camera button appears above other windows. Drag it to move it; click it to capture the active Chrome page.
 5. Review the imported recipe in the app. The original webpage URL is saved with it.
 

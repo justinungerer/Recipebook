@@ -404,9 +404,10 @@ public partial class MainWindow : Window
     {
         try
         {
+            // A visible folder in Documents is easy to find in the browser's folder picker.
             var folder = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "BarbsRecipeBook", "ChromeExtension");
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "Barbs Recipe Book Extension");
             Directory.CreateDirectory(folder);
             var assembly = typeof(MainWindow).Assembly;
             foreach (var name in assembly.GetManifestResourceNames()

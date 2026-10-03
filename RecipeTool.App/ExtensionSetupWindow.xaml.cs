@@ -171,11 +171,10 @@ public partial class ExtensionSetupWindow : Window
                 break;
             case 3:
                 StepTitle.Text = "Choose the extension folder";
-                StepText.Text = "In the window that opens, click the “Folder” box at the bottom, press Ctrl+V to paste the folder, press Enter, then click “Select Folder”.";
-                StepHint.Text = $"The folder is: {_folder}\nIf you can't paste, click the button below to copy it again.";
+                StepText.Text = $"A “Select the extension folder” window opens. ① On the left, click “Documents”. ② Click the folder named “{Path.GetFileName(_folder)}” once. ③ Click the “Select Folder” button.";
+                StepHint.Text = "Don't open the folder or look inside it. Just click it once and click “Select Folder”. If you can't find it, its full location is below.\n" + _folder;
                 ActionButton.Content = "Copy folder location";
-                Clipboard.SetText(_folder);
-                DrawFileDialog();
+                Clipboard.SetText(_folder);                DrawFileDialog();
                 break;
             default:
                 StepTitle.Text = "All set — open a recipe page";
@@ -278,25 +277,29 @@ public partial class ExtensionSetupWindow : Window
 
     private void DrawFileDialog()
     {
+        var name = Path.GetFileName(_folder);
         Rect(0, 66, 702, 272, Brush("#6B6B6B"), null, 0);
-        Rect(70, 78, 560, 252, Brushes.White, Brush("#888888"), 4);
-        Picture.Children.Add(MakeText("Select the extension folder to load", 13, false, Brushes.Black, 84, 86));
-        Rect(84, 112, 532, 130, Brush("#F6F6F6"), Brush("#CCCCCC"), 0);
-        Picture.Children.Add(MakeText("📁 ChromeExtension", 13, false, Brushes.Black, 96, 122));
-        Picture.Children.Add(MakeText("Folder:", 13, false, Brushes.Black, 84, 262));
-        Rect(140, 258, 470, 26, Brushes.White, Brush("#7A7A7A"), 0);
-        Picture.Children.Add(MakeText("Press Ctrl+V", 12, false, Brushes.DimGray, 148, 263));
-        Rect(400, 294, 110, 28, Brush("#E1E1E1"), Brush("#ADADAD"), 3);
-        Picture.Children.Add(MakeText("Select Folder", 12, false, Brushes.Black, 418, 300));
-        Rect(520, 294, 90, 28, Brush("#E1E1E1"), Brush("#ADADAD"), 3);
-        Picture.Children.Add(MakeText("Cancel", 12, false, Brushes.Black, 546, 300));
-        Ring(138, 255, 476, 32);
-        Picture.Children.Add(MakeText("① Paste here", 13, true, Red, 500, 263));
-        Ring(396, 291, 118, 34);
-        Picture.Children.Add(MakeText("② Then click", 13, true, Red, 270, 300));
-        Arrow(375, 308, 394, 308);
+        Rect(40, 76, 620, 256, Brushes.White, Brush("#888888"), 4);
+        Picture.Children.Add(MakeText("Select the extension folder to load", 13, false, Brushes.Black, 54, 82));
+        Rect(54, 106, 130, 170, Brush("#F0F4FA"), Brush("#CCCCCC"), 0);
+        Picture.Children.Add(MakeText("🖥 Desktop", 12, false, Brushes.Black, 62, 114));
+        Picture.Children.Add(MakeText("📄 Documents", 12, true, Brushes.Black, 62, 144));
+        Picture.Children.Add(MakeText("⬇ Downloads", 12, false, Brushes.Black, 62, 174));
+        Rect(190, 106, 456, 170, Brush("#F6F6F6"), Brush("#CCCCCC"), 0);
+        Rect(196, 140, 444, 26, Brush("#CCE4F7"), null, 0);
+        Picture.Children.Add(MakeText($"📁 {name}", 13, false, Brushes.Black, 204, 145));
+        Rect(400, 292, 110, 28, Brush("#E1E1E1"), Brush("#ADADAD"), 3);
+        Picture.Children.Add(MakeText("Select Folder", 12, false, Brushes.Black, 418, 298));
+        Rect(520, 292, 90, 28, Brush("#E1E1E1"), Brush("#ADADAD"), 3);
+        Picture.Children.Add(MakeText("Cancel", 12, false, Brushes.Black, 546, 298));
+        Ring(54, 138, 130, 32);
+        Picture.Children.Add(MakeText("① Click", 13, true, Red, 70, 250));
+        Ring(194, 138, 448, 30);
+        Picture.Children.Add(MakeText("② Click this folder once", 13, true, Red, 380, 200));
+        Ring(396, 289, 118, 34);
+        Picture.Children.Add(MakeText("③ Then click", 13, true, Red, 270, 298));
+        Arrow(375, 306, 394, 306);
     }
-
     private static SolidColorBrush Brush(string hex) => (SolidColorBrush)new BrushConverter().ConvertFromString(hex)!;
 
     private void Rect(double x, double y, double w, double h, Brush fill, Brush? stroke, double radius)
