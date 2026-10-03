@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using RecipeTool.Core;
 using System.Diagnostics;
 using System.IO;
@@ -65,6 +65,7 @@ public partial class MainWindow : Window
         RefreshRecipes();
         _isReady = true;
 
+        RefreshInstalledExtension();
         _captureServer = new RecipeCaptureServer(OnRecipeCapturedAsync);
         try
         {
@@ -416,25 +417,50 @@ public partial class MainWindow : Window
         }
     }
 
+    // A visible folder in Documents is easy to find in the browser's folder picker.
+    private static string ExtensionFolder => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+        "Barbs Recipe Book Extension");
+
+    private static string WriteExtensionFiles()
+    {
+        var folder = ExtensionFolder;
+        Directory.CreateDirectory(folder);
+        var assembly = typeof(MainWindow).Assembly;
+        foreach (var name in assembly.GetManifestResourceNames()
+            .Where(n => n.StartsWith("ChromeExtension/", StringComparison.Ordinal)))
+        {
+            using var source = assembly.GetManifestResourceStream(name)!;
+            using var target = File.Create(Path.Combine(folder, name["ChromeExtension/".Length..]));
+            source.CopyTo(target);
+        }
+
+        return folder;
+    }
+
+    // Keeps a previously installed extension folder current after the app is upgraded.
+    private static void RefreshInstalledExtension()
+    {
+        try
+        {
+            if (Directory.Exists(ExtensionFolder))
+            {
+                WriteExtensionFiles();
+            }
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            // Chrome may hold a file briefly; the next launch will retry.
+        }
+    }
+
     private void InstallExtension_Click(object sender, RoutedEventArgs e) => InstallExtension();
 
     private void InstallExtension()
     {
         try
         {
-            // A visible folder in Documents is easy to find in the browser's folder picker.
-            var folder = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                "Barbs Recipe Book Extension");
-            Directory.CreateDirectory(folder);
-            var assembly = typeof(MainWindow).Assembly;
-            foreach (var name in assembly.GetManifestResourceNames()
-                .Where(n => n.StartsWith("ChromeExtension/", StringComparison.Ordinal)))
-            {
-                using var source = assembly.GetManifestResourceStream(name)!;
-                using var target = File.Create(Path.Combine(folder, name["ChromeExtension/".Length..]));
-                source.CopyTo(target);
-            }
+            var folder = WriteExtensionFiles();
 
             var wizard = new ExtensionSetupWindow(folder,
                 () => _captureServer?.LastExtensionSeen is { } seen && DateTimeOffset.UtcNow - seen < TimeSpan.FromSeconds(7))
@@ -549,6 +575,18 @@ public partial class MainWindow : Window
 
         var connected = _captureServer.LastExtensionSeen is { } seen
             && DateTimeOffset.UtcNow - seen < TimeSpan.FromSeconds(7);
+        if (connected && _captureServer.ExtensionVersion != RecipeCaptureServer.RequiredExtensionVersion)
+        {
+            _captureWidget?.ShowState("⚠️", true);
+            CaptureStatusText.Text = "Browser extension is out of date";
+            MessageBox.Show(
+                "Chrome is still running an older copy of the capture extension, which can miss recipes.\n\n" +
+                "Open chrome://extensions, find Barb's Recipe Book Capture, click its reload (circular arrow) button, " +
+                "then reload the recipe page and try again.\n\n(The app has already updated the extension files.)",
+                "Barb's Recipe Book", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         _captureServer.RequestCapture();
         _captureRequestedAt = DateTimeOffset.UtcNow;
         CaptureStatusText.Text = "Waiting for active browser page…";

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Barb's Recipe Book Capture",
   "description": "Send a recipe from the active Chrome webpage to Barb's local recipe book when she clicks its camera button.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "permissions": [],
   "host_permissions": [
     "http://127.0.0.1:47831/*"

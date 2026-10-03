@@ -12,6 +12,7 @@ namespace RecipeTool.App;
 
 public sealed class RecipeCaptureServer
 {
+    public const string RequiredExtensionVersion = "1.1.0";
     private const int Port = 47831;
     private const string BridgeToken = "cba61e4a-f2c9-4b40-a691-3fd428d775b6";
     private readonly Func<CapturedRecipe, Task> _onRecipeCaptured;
@@ -20,6 +21,18 @@ public sealed class RecipeCaptureServer
     private Guid? _pendingRequestId;
     private DateTimeOffset _pendingExpiry;
     private DateTimeOffset? _lastExtensionSeen;
+    private string _extensionVersion = "";
+
+    public string ExtensionVersion
+    {
+        get
+        {
+            lock (_requestLock)
+            {
+                return _extensionVersion;
+            }
+        }
+    }
 
     public DateTimeOffset? LastExtensionSeen
     {
@@ -50,7 +63,7 @@ public sealed class RecipeCaptureServer
         builder.Services.AddCors(options => options.AddPolicy("extension", policy =>
             policy.SetIsOriginAllowed(IsChromeExtensionOrigin)
                 .WithMethods("GET", "POST")
-                .WithHeaders("Content-Type", "X-RecipeTool-Token")));
+                .WithHeaders("Content-Type", "X-RecipeTool-Token", "X-RecipeTool-Version")));
         var app = builder.Build();
         app.UseCors("extension");
         app.MapGet("/api/status", (HttpContext context) =>
@@ -60,7 +73,7 @@ public sealed class RecipeCaptureServer
                 return Results.Unauthorized();
             }
 
-            TouchExtension();
+            TouchExtension(context);
             return Results.Ok(new { running = true });
         });
         app.MapGet("/api/capture-request", (HttpContext context) =>
@@ -70,7 +83,7 @@ public sealed class RecipeCaptureServer
                 return Results.Unauthorized();
             }
 
-            TouchExtension();
+            TouchExtension(context);
             var requestId = GetPendingRequest();
             return requestId is null
                 ? Results.NoContent()
@@ -156,11 +169,13 @@ public sealed class RecipeCaptureServer
         }
     }
 
-    private void TouchExtension()
+    private void TouchExtension(HttpContext context)
     {
+        var version = context.Request.Headers["X-RecipeTool-Version"].FirstOrDefault() ?? "";
         lock (_requestLock)
         {
             _lastExtensionSeen = DateTimeOffset.UtcNow;
+            _extensionVersion = version.Length <= 20 ? version : "";
         }
     }
 

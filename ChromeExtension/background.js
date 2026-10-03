@@ -1,6 +1,9 @@
 const API = "http://127.0.0.1:47831";
 const TOKEN = "cba61e4a-f2c9-4b40-a691-3fd428d775b6";
-const headers = { "X-RecipeTool-Token": TOKEN };
+const headers = {
+  "X-RecipeTool-Token": TOKEN,
+  "X-RecipeTool-Version": chrome.runtime.getManifest().version
+};
 
 async function pollDesktopApp() {
   const status = await fetch(`${API}/api/status`, {
