@@ -104,6 +104,10 @@
                     <StackPanel Grid.Row="0">
                         <TextBlock x:Name="RecipeNameText" Text="Welcome to Barb's recipe book"
                                    FontSize="27" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock x:Name="RecipeSourceText" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"
+                                   Visibility="Collapsed">
+                            <Hyperlink Click="SourceLink_Click"><Run x:Name="RecipeSourceRun" /></Hyperlink>
+                        </TextBlock>
                         <TextBlock x:Name="RecipeDescriptionText" Margin="0,7,0,0"
                                    Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" />
                         <WrapPanel Margin="0,10,0,14">
@@ -182,9 +186,6 @@
                             <Button Content="Restore backup" Click="RestoreBackup_Click" />
                             <Button Content="Open library folder" Click="OpenLibraryFolder_Click"
                                     ToolTip="Open the local-only recipe data folder" />
-                            <TextBlock x:Name="RecipeSourceText" VerticalAlignment="Center" Margin="8,0,0,0"
-                                       Foreground="{StaticResource MutedBrush}" TextTrimming="CharacterEllipsis"
-                                       MaxWidth="270" />
                         </StackPanel>
                     </DockPanel>
                 </Grid>
@@ -205,4 +206,5 @@
         </Border>
     </Grid>
 </Window>
+
 

@@ -142,6 +142,24 @@ public partial class MainWindow : Window
         ReviewNotice.Visibility = recipe?.NeedsReview == true ? Visibility.Visible : Visibility.Collapsed;
     }
 
+    private void SourceLink_Click(object sender, RoutedEventArgs e)
+    {
+        var url = RecipeSourceRun.Text;
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
+        {
+            return;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo(uri.AbsoluteUri) { UseShellExecute = true });
+        }
+        catch (Exception)
+        {
+            MessageBox.Show(this, "Could not open the link.", "Barb's Recipe Book");
+        }
+    }
+
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
     {
         if (_isReady)
@@ -609,4 +627,5 @@ public partial class MainWindow : Window
         }
     }
 }
+
 
