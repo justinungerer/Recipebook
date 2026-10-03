@@ -138,14 +138,17 @@ public partial class MainWindow : Window
         RecipeNotesText.Visibility = string.IsNullOrWhiteSpace(RecipeNotesText.Text) ? Visibility.Collapsed : Visibility.Visible;
         AdjustButton.Visibility = EditButton.Visibility = DeleteButton.Visibility = inTrash ? Visibility.Collapsed : Visibility.Visible;
         RestoreButton.Visibility = PurgeButton.Visibility = inTrash && hasRecipe ? Visibility.Visible : Visibility.Collapsed;
-        RecipeSourceText.Text = recipe?.SourceUrl ?? "";
-        RecipeSourceText.ToolTip = recipe?.SourceUrl;
+        var source = recipe?.SourceUrl?.Trim() ?? "";
+        RecipeSourceLink.Tag = source;
+        RecipeSourceText.ToolTip = source;
+        RecipeSourceText.Visibility = Uri.TryCreate(source, UriKind.Absolute, out var sourceUri)
+            && sourceUri.Scheme is "http" or "https" ? Visibility.Visible : Visibility.Collapsed;
         ReviewNotice.Visibility = recipe?.NeedsReview == true ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void SourceLink_Click(object sender, RoutedEventArgs e)
     {
-        var url = RecipeSourceRun.Text;
+        var url = RecipeSourceLink.Tag as string ?? "";
         if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
         {
             return;
